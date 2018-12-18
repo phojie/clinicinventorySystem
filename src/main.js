@@ -6,12 +6,12 @@ import store from './store'
 
 import firebase from 'firebase'
 const config = {
-  apiKey: "AIzaSyDx5FJmdWWj_Fi-2DXYnpkhQST83_9ugtc",
-  authDomain: "inventory-system-9a2c4.firebaseapp.com",
-  databaseURL: "https://inventory-system-9a2c4.firebaseio.com",
-  projectId: "inventory-system-9a2c4",
-  storageBucket: "inventory-system-9a2c4.appspot.com",
-  messagingSenderId: "669915201568"
+  apiKey: "AIzaSyALo585DXEy18Wu4HLdBbVDMtTq5YFyFMY",
+  authDomain: "clinic-system-d3b2a.firebaseapp.com",
+  databaseURL: "https://clinic-system-d3b2a.firebaseio.com",
+  projectId: "clinic-system-d3b2a",
+  storageBucket: "clinic-system-d3b2a.appspot.com",
+  messagingSenderId: "831293173167"
 };
 firebase.initializeApp(config);
 
