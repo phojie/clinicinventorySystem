@@ -1,0 +1,23 @@
+submitForm() {
+      if (this.$refs.form.validate()) {
+        this.valid= true
+        this.errorMessage = ''
+        this.isError = false
+        let vm = this
+        firebase.auth().signInWithEmailAndPassword(vm.accountData.username, vm.accountData.password).then(
+          function (user) {
+            const accountDetails = Object.assign({},{user} );
+            localStorage.setItem("accountDetails", JSON.stringify(accountDetails));
+            vm.$store.commit('saveAccountDetails')
+            vm.$router.push('/')
+          },
+          function(error) {
+            // var errorCode = error.code;
+            vm.valid= false
+            var errorMessage = error.message
+            vm.accountData.isError = true
+            vm.accountData.password = ''
+            vm.$refs.password.focus()
+            vm.accountData.errorMessage = 'These credentials do not match our records.'
+        })
+      }

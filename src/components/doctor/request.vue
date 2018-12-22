@@ -1,0 +1,267 @@
+<template>
+  <v-container grid-list-lg>
+  <v-layout row wrap >
+    <v-flex sm12>
+      <v-card>
+      <v-card-title>
+        <div class="font-weight-black">Request List</div>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="myRequest"
+        :search="search"
+      >
+        <template slot="items" slot-scope="props">
+          <td class="text-xs-">{{ props.item.firstname }} {{ props.item.lastname }}</td>
+          <td class="text-xs-">{{ props.item.cnumber }}</td>
+          <td class="text-xs-">{{ props.item.email }}</td>
+          <td class="text-xs-">{{ props.item.adate }}</td>
+          <td class="">
+            <v-chip @click="viewDetails(props.item)" small tile color="green lighten-5" text-color="green" >Verify Form</v-chip> 
+          </td>
+        </template>
+        <v-alert slot="no-results" :value="true" color="error" icon="warning">
+          Your search for "{{ search }}" found no results.
+        </v-alert>
+      </v-data-table>
+      </v-card>
+    </v-flex>
+  </v-layout>
+
+   <v-dialog
+      v-model="dialog"
+      width="800"
+    >
+       <v-container  style="" class="mx-0 lighten-4 grey" grid-list-lg>
+        <v-card-title class="mb-1">
+          <span class="headline">Appointment Information</span>
+          <v-spacer></v-spacer>
+          <v-btn color="error darken-2" flat @click="declineA" >Decline</v-btn>
+          <v-btn color="success darken-2" flat @click="acceptA" >Accept</v-btn>
+        </v-card-title>
+            <v-layout wrap>
+              <v-flex xs12 sm1 d-flex>
+                <v-select
+                  :items="['Mr','Mrs','Ms','Fr','Sr','Reve.','Dr']"
+                  label="Title"
+                  readonly
+                  v-model="modelPatient.title"
+                ></v-select>
+              </v-flex>
+              <v-flex xs12 sm6 md3>
+                <v-text-field 
+                  readonly
+                  v-model="modelPatient.firstname" label="First name"></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm6 md3>
+                <v-text-field 
+                  readonly
+                  v-model="modelPatient.lastname" label="Last name"></v-text-field>
+              </v-flex>
+             
+              <v-flex xs12 sm6 md5>
+                <v-text-field v-model="modelPatient.email"
+                  readonly
+                  label="E-mail">
+                </v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm6 md4>
+                <v-text-field 
+                  readonly
+                  v-model="modelPatient.cnumber" label="Phone #"></v-text-field>
+              </v-flex>
+
+               <v-flex xs12 sm4 >
+                <v-text-field 
+                  readonly
+                  v-model="modelPatient.address1" label="Address Line 1"></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm4 >
+                <v-text-field 
+                  readonly
+                  v-model="modelPatient.address2" label="Address Line 2"></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm2 d-flex>
+                <v-select
+                  readonly
+                  v-model="modelPatient.gender"
+                  :items="['Male','Female']"
+                  label="Gender"
+                ></v-select>
+              </v-flex>
+              <v-flex xs12 sm2 >
+                <v-text-field 
+                  readonly
+                  v-model="modelPatient.age" type="number" label="Age"></v-text-field>
+              </v-flex>
+              <v-flex 
+                xs12 sm4 d-flex>
+                <v-text-field 
+                  readonly
+                  label="Type of doctor selected"
+                  v-model="modelPatient.typeD"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <!-- <v-menu
+                  v-model="menu1"
+                  :close-on-content-click="false"
+                  full-width
+                  max-width="700"
+                  max-height="500"
+                >
+                  <v-text-field
+                    prepend-icon="event"
+                    slot="activator"
+                    v-model="modelPatient.date"
+                    clearable
+                    label="Selected appointment day"
+                    
+                    readonly
+                  ></v-text-field> -->
+                  <v-date-picker
+                    readonly
+                    full-width
+                    v-model="modelPatient.date"
+                    @change="menu1 = false"
+                  ></v-date-picker>
+                <!-- </v-menu> -->
+              </v-flex>
+            </v-layout>
+          </v-container>
+    </v-dialog>
+  </v-container>
+</template>
+
+<script>
+  import firebase from 'firebase'
+  import { validationMixin } from 'vuelidate'
+  import { required, maxLength, minLength, email } from 'vuelidate/lib/validators'
+  export default {
+  mixins: [validationMixin],
+  validations: {
+    doctorsDetailsProfile: {
+    
+    }
+  },
+  data() {
+    return {
+      dialog: false,
+      search: '',
+      headers: [
+        { text: 'Name', value: 'firstname', sortable: false},
+        { text: 'Phone', value: 'cnumber', sortable: false},
+        { text: 'Email', value: 'email', sortable: false},
+        { text: 'Date', value: 'adate',sortable: false},
+        { text: 'Action', value: 'lastname',sortable: false},
+      ],
+      modelPatient: {
+        title: '',
+        firstname: '',
+        lastname: '',
+        email: '',
+        cnumber:'',
+        address1: '',
+        address2: '',
+        gender:'',
+        age:'',
+        typeD: '',
+        doctor: '',
+        date: '',
+        keyIndex:'',
+      }
+    }
+  },
+  computed: {
+    accountDetails() {
+        var obUser = JSON.parse(localStorage.getItem('accountDetails') );
+        // console.log(obUser.profilePic)
+        return obUser
+    },
+    listofAppointments() {
+      return this.$store.getters.listofAppointments
+    },
+    myRequest() {
+      var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      return filter
+    }
+  },
+  methods: {
+    viewDetails(data) {
+      this.dialog = true
+      this.modelPatient= {
+        title: data.title ,
+        firstname: data.firstname ,
+        lastname: data.lastname ,
+        email: data.email ,
+        cnumber: data.cnumber ,
+        address1: data.address1 ,
+        address2: data.address2 ,
+        gender: data.gender ,
+        age: data.age ,
+        typeD:  data.typeD ,
+        doctor:  data.doctor ,
+        date: data.adate ,
+        keyIndex: data.keyIndex
+      }
+    },
+    acceptA() {
+      let vm = this
+      var newPostKey = firebase.database().ref().child('acceptedAs').push().key;
+      var submitA = firebase.database().ref('acceptedAs/'+newPostKey)
+      submitA.set({
+        keyIndex: newPostKey,
+        title: vm.modelPatient.title ,
+        firstname: vm.modelPatient.firstname ,
+        lastname: vm.modelPatient.lastname ,
+        email: vm.modelPatient.email ,
+        cnumber: vm.modelPatient.cnumber ,
+        address1: vm.modelPatient.address1 ,
+        address2: vm.modelPatient.address2 ,
+        gender: vm.modelPatient.gender ,
+        age: vm.modelPatient.age ,
+        typeD:  vm.modelPatient.typeD ,
+        doctor:  vm.modelPatient.doctor ,
+        adate: vm.modelPatient.date ,
+        status: pending
+      })
+      firebase.database().ref('appointments/'+vm.modelPatient.keyIndex).remove()
+      vm.dialog= false
+      vm.$notify({
+        group: 'bottomright',
+        type: 'success',
+        title: 'Verified successfully',
+        text: `Full name: ${_.capitalize(vm.modelPatient.firstname)} ${_.capitalize(vm.modelPatient.lastname)}` ,
+        duration: 10000,
+      })
+    },
+    declineA() {
+      let vm = this
+      firebase.database().ref('appointments/'+vm.modelPatient.keyIndex).remove()
+      vm.dialog= false
+      vm.$notify({
+        group: 'bottomright',
+        type: 'error',
+        title: 'Decline successfully',
+        text: `Full name: ${_.capitalize(vm.modelPatient.firstname)} ${_.capitalize(vm.modelPatient.lastname)}` ,
+        duration: 10000,
+      })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

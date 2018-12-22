@@ -1,41 +1,39 @@
 <template>
-    <v-form style="width:44%;" :loading="valid" @submit.prevent="submitForm">
+    <v-form  ref="form" v-model="validtest" :loading="valid" @submit.prevent="submitForm">
       <v-card flat class="mb-4 pa-3 body-1" v-if="accountData.isError" style="background-color:#f9dcd1; color:#74290e">
         {{accountData.errorMessage}}
       </v-card>
       <!-- <v-alert class="mb-5 amber" :value="accountData.isError" type="error">{{accountData.errorMessage}}</v-alert> -->
       <v-text-field
         label="Username"
+        color="blue darken-2"
         :disabled="valid"
-        single-line
-        append-icon="person"
-        solo
-        background-color="teal lighten-5"
-        color="teal"
+        flat
+        class="jieinput"
         v-model="accountData.username"
         :rules="nameRules"
-        flat
+        append-icon="person"
       ></v-text-field>
       <v-text-field
-        label="Password"
         :type="passVisi ? 'text' : 'password'"
-        single-line
-        solo
-        color="teal"
+        color="blue darken-2"
         :disabled="valid"
         flat
         ref="password"
-        background-color="teal lighten-5"
+        label="Password"
+        class="jieinput"
         v-model="accountData.password"
         :append-icon="passVisi ? 'visibility_off' : 'visibility'"
         :rules="passRules"
         @click:append="passVisi = !passVisi"
       ></v-text-field>
       <v-btn type="submit" :loading="valid" 
-        dark color="teal lighten-1" large block 
+        dark color="blue darken-2" large block 
+        class="mt-4 textNone"
+        style="border-radius:4px"
         > 
-        <v-icon size="18" class="mr-1">mdi-login</v-icon>
-        SIGN IN 
+        <v-icon size="18" class="mr-1">mdi-login-variant</v-icon>
+        Sign in
       </v-btn>
     </v-form>
 </template>
@@ -44,6 +42,8 @@
 import firebase from 'firebase';
 export default {
   data: () => ({
+    loading: false,
+    validtest:true,
     valid: false,
     passVisi: false,
     accountData: {
@@ -52,6 +52,10 @@ export default {
       errorMessage: '',
       isError: false
     },
+    emailRules: [
+      v => !!v || 'E-mail is required',
+      v => /.+@.+/.test(v) || 'E-mail must be valid'
+    ],
     nameRules: [
       v => !!v || 'Enter your username',
     ],
@@ -59,29 +63,40 @@ export default {
       v => !!v || "Enter your password",
     ]
   }),
+  computed: {
+  },
   methods: {
-    submitForm() {
-      this.valid= true
-      this.errorMessage = ''
-      this.isError = false
-      let vm = this
-      firebase.auth().signInWithEmailAndPassword(vm.accountData.username, vm.accountData.password).then(
-        function (user) {
-          const accountDetails = Object.assign({},{user} );
-          localStorage.setItem("accountDetails", JSON.stringify(accountDetails));
-          vm.$store.commit('saveAccountDetails')
-          vm.$router.push('/')
-        },
-        function(error) {
-          // var errorCode = error.code;
-          vm.valid= false
-          var errorMessage = error.message
-          vm.accountData.isError = true
-          vm.accountData.password = ''
-          vm.$refs.password.focus()
-          vm.accountData.errorMessage = 'These credentials do not match our records.'
-      })
-    }
+    submitForm: function() {
+        if (this.$refs.form.validate()) {
+          this.valid= true
+            let vm = this
+            vm.errorMessage = ''
+            vm.isError = false
+      setTimeout(function(){
+            firebase.database().ref('accountUser').on('value', function(snapshot) {
+            var findUser = _.find(snapshot.val(), {'username': _.capitalize(vm.accountData.username), 'password': vm.accountData.password})
+            // var findEmail = _.find(snapshot.val(), {'email': _.capitalize(vm.accountData.username), 'password': vm.accountData.password})
+            //  || findEmail != null
+             if(findUser != null ) {
+                // vm.$store.dispatch("getRooms")
+                // vm.$store.dispatch('getAccountUser')
+                // vm.$store.dispatch('getAppointments')
+                localStorage.setItem("accountDetails", JSON.stringify(findUser));
+                vm.$router.push('/')
+
+              } else {
+                vm.valid= false
+                vm.accountData.isError = true
+                vm.accountData.password = ''
+                vm.$refs.password.focus()
+                vm.accountData.errorMessage = 'These credentials do not match our records.'
+              }
+            })
+      }, 1000);
+
+        }
+    },
+
   }
 }
 </script>

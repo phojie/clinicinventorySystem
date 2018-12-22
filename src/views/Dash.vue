@@ -10,15 +10,16 @@ export default {
   methods: {
     logoutAccount() {
       let vm = this
-      firebase.auth().signOut().then(
-        function() {
-          localStorage.removeItem("accountDetails");
-          vm.$router.replace({
-            path:'/auth',
-          })
-        }
-      )
+      try {
+        localStorage.removeItem("accountDetails");
+      } catch(error) {
+        alert('something is wrong!')
+      } finally {
+        vm.$router.push({
+          path:'/auth',
+        })
+      }
     }
-  }
+  },
 }
 </script>

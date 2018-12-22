@@ -7,6 +7,11 @@
       <!-- enter-active-class="animated tada" -->
       <router-view/>
     </transition>
+    <notifications group="bottomright" position="bottom right" />
+    <notifications group="topright" />
+    <notifications group="bottomcenter" position="bottom center" />
+
+
   </v-app>
 </template>
 
@@ -19,5 +24,12 @@
       return {
       }
     },
+    created() {
+      this.$store.dispatch("getRooms")
+      this.$store.dispatch('getAccountUser')
+      this.$store.dispatch('getAppointments')
+      this.$store.dispatch('getAs')
+      // console.clear()
+    }
   }
 </script>

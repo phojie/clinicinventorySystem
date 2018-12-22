@@ -1,9 +1,63 @@
 html {
   overflow: auto !important;
 }
-.bgright {
-  background-image: url('imgs/bg.jpg');
-  background-position: 70% 0%;; /* Center the image */
-  background-repeat: no-repeat; /* Do not repeat the image */
-  background-size: cover; /* Resize the background image to cover the entire container */
+.bgLandingjie {
+  background-image: url(imgs/bluejie.svg),linear-gradient(180deg,#303fd9 0,#031b4e);
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
+.bgLandingjie2 {
+  background-image: url(imgs/blue2jie.svg),linear-gradient(180deg,#f9f9f9 0,#ffffff);
+  background-position: top;
+}
+
+.textLower {
+  text-transform: lowercase !important; 
+}
+.textUpper {
+  text-transform: uppercase !important; 
+}
+.textNone {
+  text-transform: none !important; 
+}
+.textCapital {
+  text-transform: capitalize !important; 
+}
+
+.jieinput .v-input__slot {
+
+}
+
+.jieinput .v-input-control {
+}
+
+
+/* calendar */
+
+div.fc-toolbar.fc-header-toolbar {
+  height: 50px;
+  background-color: #90CAF9;
+  /* background-image: url(imgs/bluejie.svg),linear-gradient(180deg,#303fd9 0,#031b4e); */
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color:white !important;
+  margin-top:40px;
+}
+div.fc-center {
+  margin-top:10px;
+}
+div.fc-left {
+  margin-top:-40px;
+  margin-left:340px !important;
+}
+div.fc-right {
+  margin-top:-40px;
+}
+
+div.fc-view-container {
+  margin-top:10px;
+}
+
