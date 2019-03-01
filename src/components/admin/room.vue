@@ -291,6 +291,7 @@
     deleteNow() {
       let vm = this
       firebase.database().ref('rooms/'+vm.roomDetails.keyIndex).remove()
+      console.log(vm.roomDetails.keyIndex)
       vm.$notify({
         group: 'bottomright',
         type: 'error',

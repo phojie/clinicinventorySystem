@@ -19,7 +19,7 @@
       <v-divider class="mt-4 mx-4 green" ></v-divider>
       <v-list dense class="">
         <v-card class="pa-4" flat width="250">
-        <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="accountDoctor">
+        <!-- <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="accountDoctor">
           <v-list-tile-action>
             <v-avatar size="21">
               <img src="https://img.icons8.com/ios/50/ffffff/services-filled.png">
@@ -30,12 +30,12 @@
               Dashboard
             </v-list-tile-title>
           </v-list-tile-content>
-          </v-btn>
+          </v-btn> -->
 
 
         <v-subheader class="mt-3 green--text">MANAGE</v-subheader>
 
-          <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/doctorAppointments">
+          <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/nurseAppointment">
           <v-list-tile-action>
             <v-avatar tile size="21">
               <img src="https://img.icons8.com/ios/50/ffffff/calendar-filled.png">
@@ -43,12 +43,12 @@
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>
-              Appointments
+              Request
             </v-list-tile-title>
           </v-list-tile-content>
           </v-btn>
 
-          <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/doctorPatients">
+          <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/nursePatient">
           <v-list-tile-action>
             <v-avatar size="21">
               <img src="https://img.icons8.com/ios/50/ffffff/hospital-filled.png">
@@ -61,7 +61,7 @@
           </v-list-tile-content>
           </v-btn>
 
-          <v-btn class="textNone caption transparent" exact-active-class="green"  depressed block to="/doctorPM">
+          <v-btn class="textNone caption transparent" exact-active-class="green"  depressed block to="/nurseAdmission">
           <v-list-tile-action>
             <v-avatar size="22">
               <img src="https://img.icons8.com/windows/80/ffffff/caduceus-filled.png">
@@ -69,7 +69,7 @@
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>
-              Prescribe Medicine
+               Admission
             </v-list-tile-title>
           </v-list-tile-content>
           </v-btn>
@@ -119,10 +119,10 @@
         <v-icon size="18" class="mr-2">mdi-chart-line</v-icon>
         Stats
       </v-btn>
-      <v-btn :ripple="false" flat outline small class="caption grey--text textNone transparent"  >
+      <!-- <v-btn :ripple="false" flat outline small class="caption grey--text textNone transparent"  >
         <v-icon size="18" class="mr-2">mdi-bell</v-icon>
         5 Notifications
-      </v-btn>
+      </v-btn> -->
       <v-btn :ripple="false" flat outline small class="caption grey--text textNone transparent"  >
         <v-icon size="18" class="mr-2">person</v-icon>
         {{accountDetails.fn}} {{accountDetails.ln}}

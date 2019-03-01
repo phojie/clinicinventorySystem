@@ -5,6 +5,9 @@ import router from './router'
 import store from './store'
 
 var moment = require('moment');
+var ip = require('ip');
+
+
 // lodash
 
 // Load the full build.
@@ -35,6 +38,11 @@ const config = {
   messagingSenderId: "465315485600"
 };
 firebase.initializeApp(config);
+
+
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts)
+Vue.component('apexchart', VueApexCharts)
 
 import Notifications from 'vue-notification'
 Vue.use(Notifications)

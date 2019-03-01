@@ -419,7 +419,6 @@
                     :value="computedDateFormattedMomentjs"
                     clearable
                     label="Select your appointment day"
-                    
                     readonly
                   ></v-text-field>
                     <!-- :allowed-dates="testerf" -->
@@ -436,7 +435,7 @@
           </v-container>
           <v-card  class="light-green lighten-5 pa-5 text-xs-center" v-else>
             <div class="light-green--text text--darken-1 display-2"> We Received Your Request! </div>
-            <div class="subheading mt-2">Thank you for submitting your appointment request. A representative will contact you by phone within two business days.</div>
+            <div class="subheading mt-2">Thank you for submitting your appointment request. A representative will contact you by phone within this day.</div>
             <v-btn flat @click="submitedALready = false" class="textNone darken-4 white--text amber mt-4">New Appointment</v-btn>
           </v-card>
         </v-card-text>
@@ -447,6 +446,7 @@
 
 <script>
 import moment from 'moment'
+import publicIp from 'public-ip'
 import firebase from 'firebase'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, minLength, email } from 'vuelidate/lib/validators'
@@ -498,7 +498,6 @@ export default {
     },
     // testerf: val => parseInt(val.split('-')[2], 10) % 2 === 0,
     saveAppointment() {
-      console.log(this.modelPatient)
       let vm = this
       if(this.$v.$invalid) {
         this.$v.$touch()
@@ -520,25 +519,28 @@ export default {
           typeD: _.capitalize(vm.modelPatient.typeD),
           doctor: vm.modelPatient.doctor,
           adate: vm.modelPatient.date,
+        }, function(error) {
+          if(error) {
+            alert("Hinay kayu connection nimu :'(")
+          } else {
+            vm.modelPatient = {
+              title: '',
+              firstname: '',
+              lastname: '',
+              email: '',
+              cnumber:'',
+              address1: '',
+              address2: '',
+              gender:'',
+              age:'',
+              typeD: '',
+              doctor: '',
+              date: '',
+            }
+            vm.submitedALready = true
+            vm.$v.$reset()
+          }
         })
-
-        vm.modelPatient = {
-          title: '',
-          firstname: '',
-          lastname: '',
-          email: '',
-          cnumber:'',
-          address1: '',
-          address2: '',
-          gender:'',
-          age:'',
-          typeD: '',
-          doctor: '',
-          date: '',
-        }
-        vm.submitedALready = true
-        vm.$v.$reset()
-
       }
     }
   },
@@ -647,6 +649,20 @@ export default {
   // window.location.pathname returns the path and filename of the current page.
   // window.location.protocol returns the web protocol used (http: or https:)
   // window.location.assign loads a new document.
+  },
+  created() {
+    async function jie() {
+    var myip = await publicIp.v4();
+    //=> '46.5.21.123'
+    var ippusher = firebase.database().ref('ip').push()
+    ippusher.set({
+      ip: myip
+    })
+    // console.log(await publicIp.v6());
+    //=> 'fe80::200:f8ff:fe21:67cf'
+    }
+    jie()
+   
   }
 }
 </script>

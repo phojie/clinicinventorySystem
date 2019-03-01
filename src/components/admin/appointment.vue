@@ -498,8 +498,8 @@
       return this.$store.getters.listofAs
     },
     myRequest() {
-      // var filter = _.filter(this.listofAppointments,'doctor')
-      var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      var filter = _.filter(this.listofAppointments,'doctor')
+      // var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
       // var filter = _.filter(this.listofAppointments,'doctor')
       // console.log("​myRequest -> filter", filter)
       return filter
@@ -633,8 +633,12 @@
         this.$v.$touch()
       } else {
         var newPostKey = firebase.database().ref().child('admissions').push().key;
-        
-         var newAdmission = firebase.database().ref('admissions/'+newPostKey)
+        var storageRef = firebase.storage().ref();
+        var updateApp = firebase.database().ref().child('acceptedAs/'+vm.modelPatient.keyIndex)
+        updateApp.update({
+          status: 'Admitted'
+        })
+        var newAdmission = firebase.database().ref('admissions/'+newPostKey)
         newAdmission.set({
           title: vm.modelPatient.title ,
           firstname: vm.modelPatient.firstname ,
@@ -692,13 +696,6 @@
             vm.dialogAdmit = false
           }
         })
-
-        
-        var updateApp = firebase.database().ref().child('acceptedAs/'+vm.modelPatient.keyIndex)
-        updateApp.update({
-          status: 'Admitted'
-        })
-       
         
       }
     },

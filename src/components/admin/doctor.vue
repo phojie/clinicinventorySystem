@@ -261,7 +261,7 @@
       return getDoc      
     },
     uniq() {
-      var findUsername = _.find(this.listofUsers, ['Username', _.capitalize(this.doctorsDetailsProfile.username)])
+      var findUsername = _.find(this.listofUsers, ['username', _.capitalize(this.doctorsDetailsProfile.username)])
       var findEmail = _.find(this.listofUsers, ['email', _.capitalize(this.doctorsDetailsProfile.email)])
       if(findUsername != null && this.doctorsDetailsProfile.username != this.doctorsDetailsProfile.dummyUsername || findEmail != null && this.doctorsDetailsProfile.email != this.doctorsDetailsProfile.dummyEmail) { 
         return true
@@ -333,6 +333,7 @@
   methods: {
     deleteNow() {
       let vm= this
+      // alert(vm.doctorsDetailsProfile.keyIndex)
       firebase.database().ref('accountUser/'+vm.doctorsDetailsProfile.keyIndex).remove()
       vm.image= ''
       vm.$notify({
@@ -378,8 +379,8 @@
         mn: '',
         ln: '',
         email: '',
-        Password: '',
-        Username: '',
+        password: '',
+        username: '',
         doctortype: [],
         profile: '',
         cnumber: '',
@@ -425,8 +426,8 @@
             mn: '',
             ln: '',
             email: '',
-            Password: '',
-            Username: '',
+            password: '',
+            username: '',
             doctortype: [],
             profile: '',
             cnumber: '',
@@ -462,8 +463,8 @@
             mn: '',
             ln: '',
             email: '',
-            Password: '',
-            Username: '',
+            password: '',
+            username: '',
             doctortype: [],
             profile: '',
             cnumber: '',
@@ -471,7 +472,7 @@
           vm.$v.$reset()
           vm.dialogDoctor = false
         } else {
-          var uploadTask = storageRef.child(`profileimages/` + doctorsDetailsProfile.keyIndex).putString(vm.image, 'data_url')
+          var uploadTask = storageRef.child(`profileimages/` + vm.doctorsDetailsProfile.keyIndex).putString(vm.image, 'data_url')
           uploadTask.on('state_changed', function(snapshot){
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           }, function(error) {
@@ -486,7 +487,7 @@
                 duration: 10000,
               })
               vm.doctorsDetailsProfile.profile = downloadURL
-              var add = firebase.database().ref('accountUser/'+doctorsDetailsProfile.keyIndex)
+              var add = firebase.database().ref('accountUser/'+ vm.doctorsDetailsProfile.keyIndex)
               add.set({
                 fn: _.capitalize(vm.doctorsDetailsProfile.fn),
                 mn: _.capitalize(vm.doctorsDetailsProfile.mn),
@@ -506,8 +507,8 @@
                 mn: '',
                 ln: '',
                 email: '',
-                Password: '',
-                Username: '',
+                password: '',
+                username: '',
                 doctortype: [],
                 profile: '',
                 cnumber: '',

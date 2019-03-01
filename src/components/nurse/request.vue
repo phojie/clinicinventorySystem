@@ -20,13 +20,12 @@
         :search="search"
       >
         <template slot="items" slot-scope="props">
-          <td class="text-xs-">{{ props.item.firstname }} {{ props.item.lastname }}</td>
+          <td class="text-xs-"><span class="font-weight-black">{{props.item.title}}.</span> {{ props.item.firstname }} {{ props.item.lastname }}</td>
           <td class="text-xs-">{{ props.item.cnumber }}</td>
           <td class="text-xs-">{{ props.item.email }}</td>
-          <td class="text-xs-">{{ props.item.adate }}</td>
+          <td class="text-xs- font-weight-black blue--text text--darken-3">{{ props.item.adate }}</td>
           <td class="">
             <v-btn @click="viewDetails(props.item)" small  flat class="green--text textNone caption"  text-color="" >Verify Form</v-btn> 
-            <!-- <v-chip @click="viewDetails(props.item)" small tile color="green lighten-5" text-color="green" >Verify Form</v-chip>  -->
           </td>
         </template>
         <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -161,11 +160,11 @@
       dialog: false,
       search: '',
       headers: [
-        { text: 'Name', value: 'firstname', sortable: false},
-        { text: 'Phone', value: 'cnumber', sortable: false},
-        { text: 'Email', value: 'email', sortable: false},
-        { text: 'Date', value: 'adate',sortable: false},
-        { text: 'Action', value: 'lastname',sortable: false},
+        { text: 'Name', value: 'firstname', sortable: true},
+        { text: 'Phone', value: 'cnumber', sortable: true},
+        { text: 'Email', value: 'email', sortable: true},
+        { text: 'Date', value: 'adate',sortable: true},
+        { text: 'Action', value: 'lastname',sortable: true},
       ],
       modelPatient: {
         title: '',
@@ -194,7 +193,7 @@
       return this.$store.getters.listofAppointments
     },
     myRequest() {
-      var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      var filter = _.filter(this.listofAppointments,'doctor')
       return filter
     }
   },
@@ -259,7 +258,7 @@
         duration: 10000,
       })
     }
-  }
+  },
 }
 </script>
 

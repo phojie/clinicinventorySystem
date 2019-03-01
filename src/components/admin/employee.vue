@@ -434,7 +434,6 @@
       // this.$v.$reset()
       let vm = this
       this.loadingPercent = 0
-      // console.log(this.image)
       if(this.$v.$invalid) {
         this.$v.$touch()
       } else {
@@ -522,7 +521,7 @@
           vm.$v.$reset()
           vm.dialogDoctor = false
         } else {
-          var uploadTask = storageRef.child(`profileimages/` + doctorsDetailsProfile.keyIndex).putString(vm.image, 'data_url')
+          var uploadTask = storageRef.child(`profileimages/` + vm.doctorsDetailsProfile.keyIndex).putString(vm.image, 'data_url')
           uploadTask.on('state_changed', function(snapshot){
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           }, function(error) {
@@ -537,7 +536,7 @@
                 duration: 10000,
               })
               vm.doctorsDetailsProfile.profile = downloadURL
-              var add = firebase.database().ref('accountUser/'+doctorsDetailsProfile.keyIndex)
+              var add = firebase.database().ref('accountUser/'+vm.doctorsDetailsProfile.keyIndex)
               add.set({
                 fn: _.capitalize(vm.doctorsDetailsProfile.fn),
                 mn: _.capitalize(vm.doctorsDetailsProfile.mn),

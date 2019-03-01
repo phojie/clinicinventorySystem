@@ -13,11 +13,13 @@ import portal from './views/Portal.vue'
 import Admin from './views/Admin.vue'
 import adminDash from './components/admin/dash.vue'
 import admission from './components/admin/admission.vue'
-import dietary from './components/admin/dietary.vue'
+import appointment from './components/admin/appointment.vue'
 import doctor from './components/admin/doctor.vue'
 import employee from './components/admin/employee.vue'
 import patient from './components/admin/patient.vue'
 import room from './components/admin/room.vue'
+import request from './components/admin/request.vue'
+
 
 //doctor
 import vDoctor from './views/Doctor.vue'
@@ -29,6 +31,14 @@ import doctorRequest from './components/doctor/request.vue'
 //
 import accountNurse from './views/Nurse.vue'
 import nurseDash from './components/nurse/dash.vue'
+import nurseAppointment from './components/nurse/appointment.vue'
+import nurseAdmission from './components/nurse/admission.vue'
+import nursePatient from './components/nurse/patient.vue'
+
+
+//
+import accountPharma from './views/Pharma.vue'
+import medicine from './components/pharmacist/medicine.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -74,13 +84,16 @@ const router = new Router({
           component: employee,
         },
         {
-          path: '/Dietary',
-          component: dietary,
+          path: '/Appointments',
+          component: appointment,
         },
         {
           path: '/Rooms',
           component: room
-        }
+        }, {
+          path: '/Request',
+          component: request
+        },
       ]
     },{
       path: '/accountDoctor',
@@ -117,8 +130,32 @@ const router = new Router({
           path: '/',
           component: nurseDash
         },
+        {
+         path: '/nurseAppointment',
+         component: nurseAppointment
+       },
+       {
+         path: '/nursePatient',
+         component: nursePatient
+       },
+       {
+         path: '/nurseAdmission',
+         component: nurseAdmission
+       },
       ]
-    }
+    },
+    {
+      path: '/accountPharmacist',
+      component: accountPharma,
+      meta: {requiresAuth:true},
+      children: [
+        {
+          path: '/',
+          component: medicine
+        },
+      ]
+    },
+    
 
   ]
 })
@@ -158,20 +195,23 @@ router.beforeEach((to, from, next) => {
       else if(to.path == '/Employees'){
         next('/Employees')
       } 
-      else if(to.path == '/Dietary'){
-        next('/Dietary')
+      else if(to.path == '/Appointments'){
+        next('/Appointments')
       } 
       else if(to.path == '/Rooms'){
         next('/Rooms')
       } else if(to.path == '/Administrator') {
         next('/Administrator')
+      } else if(to.path == '/Request') {
+        next('/Request')
       } else {
         next('/Administrator')
       }
     } else if(objAccount.type == 1){
       // doctor
       if(to.path == '/accountDoctor') {
-        next('/accountDoctor')
+      //   next('/accountDoctor')
+        next('/doctorAppointments')
       } else if(to.path == '/doctorAppointments'){
         next('/doctorAppointments')
       }
@@ -187,7 +227,17 @@ router.beforeEach((to, from, next) => {
       }
     } else if(objAccount.type == 2) {
       // nurse
-      next('/accountNurse')
+      if(to.path == '/nurseAppointment') {
+        next('/nurseAppointment')
+      } else if(to.path == '/nursePatient') {
+         next('/nursePatient')
+      }
+      else if(to.path == '/nurseAdmission') {
+         next('/nurseAdmission')
+      } 
+      else {
+         next('/nurseAppointment')
+      }
     } else if(objAccount.type == 3) {
       // pharmacist
       next('/accountPharmacist')

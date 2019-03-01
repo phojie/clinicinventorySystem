@@ -35,73 +35,20 @@
             <td class="">{{ props.item.gender }}</td>
             <!-- <td class=""> <v-chip small color="blue lighten-5" text-color="blue" > ₱ {{props.item.charges}}</v-chip> </td> -->
             <td class="justify-center ">
-               <v-icon
-                  class=" mr-2"
-                  @click="unconfined(props.item)"
-               >
-                logout
-              </v-icon>
               <v-icon
+                small
                 class="mr-2"
                 @click="editItem(props.item)"
               >
                 edit
               </v-icon>
               <v-icon
+                small
                 @click="deleteItem(props.item)"
               >
                 delete
               </v-icon>
           </td>
-        </tr>
-      </template>
-      <template  slot="expand" slot-scope="props">
-        <v-card class="px-4" flat v-if="props.item.des != ''">
-          <v-card-title class="blue--text">Patient Description</v-card-title>
-          <v-card-text > {{props.item.des}}</v-card-text>
-        </v-card>
-        <v-card class="px-4" v-else>
-          <v-card-title class="error--text">No Description added</v-card-title>
-        </v-card>
-      </template>
-      <v-alert slot="no-results" :value="true" color="error" icon="warning">
-        Your search for "{{ search }}" found no results.
-      </v-alert>
-    </v-data-table>
-      </v-card>
-    </v-flex>
-  </v-layout>
-
-   <v-layout row wrap >
-    <v-flex sm12>
-      <v-card>
-      <v-card-title>
-        <div class="font-weight-black">Patient's History</div>
-      
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search2"
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        :headers="headers2"
-        :items="indexHistoryP"
-        :search="search2"
-        item-key="name"
-      >
-        <template slot="items" slot-scope="props">
-          <tr @click="props.expanded = !props.expanded">
-            <td><span class="font-weight-bold">{{ props.item.name }}</span> </td>
-            <td class="">{{ props.item.rmtype }}</td>
-            <td class="">{{ props.item.email }}</td>
-            <td class="">{{ props.item.age }}</td>
-            <td class="">{{ props.item.gender }}</td>
-            <!-- <td class=""> <v-chip small color="blue lighten-5" text-color="blue" > ₱ {{props.item.charges}}</v-chip> </td> -->
-         
         </tr>
       </template>
       <template  slot="expand" slot-scope="props">
@@ -170,14 +117,14 @@
                 v-model="patientDetails.des"
               ></v-textarea>
             </v-flex>
-            <!-- <v-flex xs6>
+            <v-flex xs6>
               <v-text-field mask="#######" label="Charges/Night" 
                 hint="Value as ₱ "
                 @input="$v.patientDetails.charges.$touch()" @blur="$v.patientDetails.charges.$touch()" 
                 :error-messages="chargesError"
                 v-model="patientDetails.charges"
                 persistent-hint ></v-text-field>
-            </v-flex> -->
+            </v-flex>
            
             
 
@@ -225,37 +172,6 @@
       </v-card>
     </v-dialog>
 
-     <v-dialog
-      v-model="unconfinedDialog"
-      width="400"
-    >
-      <v-card>
-        <v-card-title>
-          <span class="body-2 mb-2"> Are you sure you want to unconfined <span class="error--text"> {{patientDetails.name}}</span> ?  </span>
-          <v-layout row wrap >
-            <!-- <v-card-text class="grey--text"> Description: {{patientDetails.des || 'No description added'}}</v-card-text> -->
-                Patient Description: {{patientDetails.des || 'No description added'}}
-          </v-layout>
-        </v-card-title>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            flat
-            @click="unconfinedDialog = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="success"
-            flat
-            @click="unconfinedNow"
-          >
-            unconfined NOW
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
   </v-container>
 </template>
 
@@ -270,17 +186,16 @@
       name:{required},
       rmtype:{required},
       age:{required},
+      charges:{required},
       email:{required, email},
       gender: {required}
     }
   },
   data() {
     return {
-       search2: '',
       btnType: '',
       deleteDialog: false,
       dialog: false,
-      unconfinedDialog: false,
       search: '',
       headers: [
         { text: 'Patient name', value: 'name', sortable: true},
@@ -289,13 +204,6 @@
         { text: 'Age', value: 'age', sortable: false},
         { text: 'Gender', value: 'gender', sortable: false},
         { text: 'Action', value: '0',sortable: false},
-      ],
-       headers2: [
-        { text: 'Patient name', value: 'name', sortable: true},
-        { text: 'Room', value: 'rmtype', sortable: false},
-        { text: 'Email', value: 'email', sortable: false},
-        { text: 'Age', value: 'age', sortable: false},
-        { text: 'Gender', value: 'gender', sortable: false},
       ],
       patientDetails: {
         keyIndex:'',
@@ -307,6 +215,7 @@
         rmtype:'',
         des:'',
         charges:'',
+        
       }
     }
   },
@@ -364,56 +273,9 @@
     indexPatients () {
       var getindex = _.filter(this.getPatients, 'name');
       return getindex
-    },
-    indexHistoryP () {
-       var data = _.filter(this.$store.getters.listofHistory)
-      var getindex = _.filter(data, 'email');
-      return getindex
     }
   },
   methods: {
-     unconfinedNow(){
-      let vm = this
-      var newPostKey = firebase.database().ref().child('patientsHistory').push().key;
-      var newpatient = firebase.database().ref('patientsHistory/'+newPostKey)
-      newpatient.set({
-         keyIndex: newPostKey,
-         name: vm.patientDetails.name,
-         dummyName: vm.patientDetails.name,
-         email: vm.patientDetails.email,
-         gender: vm.patientDetails.gender,
-         age: vm.patientDetails.age,
-         rmtype: vm.patientDetails.rmtype,
-         des: vm.patientDetails.des,
-         charges: vm.patientDetails.charges,
-      })
-      vm.unconfinedDialog = false
-
-      firebase.database().ref('patients/'+vm.patientDetails.keyIndex).remove()
-      vm.$notify({
-        group: 'bottomright',
-        type: 'success',
-        title: 'Successfully unconfined patient',
-        text: `Name : ${_.capitalize(vm.patientDetails.name)}` ,
-        duration: 10000,
-      })
-
-      
-     },
-    unconfined(data) {
-      this.unconfinedDialog = true
-      this.patientDetails={
-        keyIndex: data.keyIndex,
-        name: data.name,
-        dummyName: data.name,
-        email: data.email,
-        gender: data.gender,
-        age: data.age,
-        rmtype: data.rmtype,
-        des: data.des,
-        charges: data.charges,
-      }
-    },
     deleteNow() {
       let vm = this
       firebase.database().ref('patients/'+vm.patientDetails.keyIndex).remove()

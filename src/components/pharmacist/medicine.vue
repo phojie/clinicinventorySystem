@@ -36,7 +36,7 @@
                </span>
                </div>
             <v-spacer></v-spacer>
-            <!-- <v-btn color="green darken-2" flat @click="savePr" >Issued</v-btn> -->
+            <v-btn color="green darken-2" flat @click="savePr" >Issued</v-btn>
             <v-btn color="primary darken-2" flat @click="viewDialog =false" >Close</v-btn>
          </v-card-title>
          <v-card-text>
@@ -164,14 +164,9 @@ export default {
    
    }),
    computed: {
-      accountDetails() {
-         var obUser = JSON.parse(localStorage.getItem('accountDetails') );
-         // console.log(obUser.profilePic)
-         return obUser
-      },
       prescriptions() {
-         var data = _.filter(this.$store.getters.listofPrescriptions,['doctor',this.accountDetails.fn+ ' '+ this.accountDetails.ln])
-        return data
+         var data = _.filter(this.$store.getters.listofPrescriptions,'keyIndex')
+         return data
       }
    },
    methods: {

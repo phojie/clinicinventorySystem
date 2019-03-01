@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "phojie-747ba"
+    "default": "phojie-747ba",
+    "phojie": "phojie-747ba"
   }
 }

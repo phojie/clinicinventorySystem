@@ -19,7 +19,7 @@
       <v-divider class="mt-4 mx-4 green" ></v-divider>
       <v-list dense class="">
         <v-card class="pa-4" flat width="250">
-        <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="accountDoctor">
+        <!-- <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="accountDoctor">
           <v-list-tile-action>
             <v-avatar size="21">
               <img src="https://img.icons8.com/ios/50/ffffff/services-filled.png">
@@ -30,7 +30,7 @@
               Dashboard
             </v-list-tile-title>
           </v-list-tile-content>
-          </v-btn>
+          </v-btn> -->
 
 
         <v-subheader class="mt-3 green--text">MANAGE</v-subheader>
@@ -132,9 +132,15 @@
         <v-icon size="18" class="mr-2">mdi-chart-line</v-icon>
         Stats
       </v-btn>
-      <v-btn :ripple="false" flat outline small class="caption grey--text textNone transparent"  >
-        <v-icon size="18" class="mr-2">mdi-bell</v-icon>
-        5 Notifications
+      <v-btn  to="/doctorRequest"  :ripple="false" flat outline small class="caption grey--text textNone transparent"  >
+        <v-avatar
+          size="20"
+          tile
+        >
+        <img src="https://img.icons8.com/ios-glyphs/30/9E9E9E/repository.png">
+        </v-avatar>
+        <span v-if="requestNumber > 1">{{requestNumber}} Requests</span>
+        <span v-else>{{requestNumber}} Request</span>
       </v-btn>
       <v-btn :ripple="false" flat outline small class="caption grey--text textNone transparent"  >
         <v-icon size="18" class="mr-2">person</v-icon>
@@ -182,6 +188,15 @@
       source: String
     },
     computed: {
+       
+      requestNumber() {
+        var data = this.$store.getters.listofAppointments
+         var filter = _.filter(data,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      //   var filter = _.filter(data,'doctor')
+        if(filter.length != 0) {
+          return filter.length
+        }
+      },
       accountDetails() {
         var obUser = JSON.parse(localStorage.getItem('accountDetails') );
         // console.log(obUser.profilePic)
