@@ -199,6 +199,7 @@ export default {
   //   apexchart: VueApexCharts
   // },
   computed: {
+     
     listofUsers() {
       return this.$store.getters.listofUsers
     },

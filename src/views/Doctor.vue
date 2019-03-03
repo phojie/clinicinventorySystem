@@ -19,7 +19,7 @@
       <v-divider class="mt-4 mx-4 green" ></v-divider>
       <v-list dense class="">
         <v-card class="pa-4" flat width="250">
-        <!-- <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="accountDoctor">
+        <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/accountDoctor">
           <v-list-tile-action>
             <v-avatar size="21">
               <img src="https://img.icons8.com/ios/50/ffffff/services-filled.png">
@@ -30,10 +30,22 @@
               Dashboard
             </v-list-tile-title>
           </v-list-tile-content>
-          </v-btn> -->
+          </v-btn>
 
 
         <v-subheader class="mt-3 green--text">MANAGE</v-subheader>
+         <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/doctorAdmission">
+          <v-list-tile-action>
+            <v-avatar tile size="21">
+                <img src="https://img.icons8.com/ios/50/ffffff/overview-pages-3-filled.png">
+            </v-avatar>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              Admission
+            </v-list-tile-title>
+          </v-list-tile-content>
+          </v-btn>
 
           <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/doctorAppointments">
           <v-list-tile-action>

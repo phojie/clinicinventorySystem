@@ -2,6 +2,17 @@
    <v-container grid-list-xs>
       <v-layout row wrap>
          <v-flex xs12>
+            <v-card-title>
+               <div class="font-weight-black">  Prescription list </div>
+               <v-spacer></v-spacer>
+               <v-text-field
+               v-model="search"
+               append-icon="search"
+               label="Search"
+               single-line
+               hide-details
+               ></v-text-field>
+            </v-card-title>
             <v-data-table
                :headers="headers"
                :items="prescriptions"
@@ -96,10 +107,16 @@
                >
                   <template slot="items" slot-scope="props">
                      <td >
-                          <span class="blue--text">{{props.item.Description}} </span>
+                          <span class="blue--text">{{props.item.Name}} </span>
                      </td>
                      <td >
                           <span class="blue--text"> {{props.item.Quantity}} </span>
+                     </td>
+                     <td >
+                          <span class="blue--text">{{props.item.Strength}} </span>
+                     </td>
+                     <td >
+                          <span class="blue--text">{{props.item.Description}} </span>
                      </td>
                   </template>
                </v-data-table>
@@ -121,7 +138,7 @@ import moment from 'moment'
 export default {
    data: () => ({
       viewDialog: false,
-
+      search: '',
       drawer: null,
       headers: [
          {
@@ -139,7 +156,7 @@ export default {
         sortBy: 'Description'
       },
       selected: [],
-      headers2: [
+       headers2: [
          {
             text: 'Prescribe Medicine',
             align: 'left',
@@ -152,6 +169,19 @@ export default {
             sortable: false,
             value: 'Quantity'
          },
+         {
+            text: 'Strength',
+            align: 'left',
+            sortable: false,
+            value: 'strength'
+         },
+         {
+            text: 'Description',
+            align: 'left',
+            sortable: false,
+            value: 'Description'
+         },
+         
       ],
       presDetails: {
          codeId: '',
@@ -165,7 +195,7 @@ export default {
    }),
    computed: {
       prescriptions() {
-         var data = _.filter(this.$store.getters.listofPrescriptions,'keyIndex')
+         var data = _.filter(this.$store.getters.listofPrescriptions,'pData')
          return data
       }
    },

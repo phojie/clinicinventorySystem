@@ -28,12 +28,15 @@ import doctorAppointments from './components/doctor/appointments.vue'
 import doctorPatients from './components/doctor/patients.vue'
 import doctorPM from './components/doctor/medical.vue'
 import doctorRequest from './components/doctor/request.vue'
+import doctorAdmission from './components/doctor/admission.vue'
+
 //
 import accountNurse from './views/Nurse.vue'
 import nurseDash from './components/nurse/dash.vue'
 import nurseAppointment from './components/nurse/appointment.vue'
 import nurseAdmission from './components/nurse/admission.vue'
 import nursePatient from './components/nurse/patient.vue'
+import nurseRequest from './components/nurse/request.vue'
 
 
 //
@@ -119,7 +122,11 @@ const router = new Router({
         {
           path: '/doctorRequest',
           component: doctorRequest,
-        }
+        },
+        {
+         path: '/doctorAdmission',
+         component: doctorAdmission,
+       }
       ]
     }, {
       path: '/accountNurse',
@@ -130,6 +137,10 @@ const router = new Router({
           path: '/',
           component: nurseDash
         },
+        {
+         path: '/nurseRequest',
+         component: nurseRequest
+       },
         {
          path: '/nurseAppointment',
          component: nurseAppointment
@@ -210,8 +221,8 @@ router.beforeEach((to, from, next) => {
     } else if(objAccount.type == 1){
       // doctor
       if(to.path == '/accountDoctor') {
-      //   next('/accountDoctor')
-        next('/doctorAppointments')
+        next('/accountDoctor')
+      //   next('/doctorAppointments')
       } else if(to.path == '/doctorAppointments'){
         next('/doctorAppointments')
       }
@@ -222,7 +233,9 @@ router.beforeEach((to, from, next) => {
         next('/doctorPM')
       } else if(to.path == '/doctorRequest'){
         next('/doctorRequest')
-      } else {
+      } else if(to.path == '/doctorAdmission'){
+         next('/doctorAdmission')
+       } else {
         next('/accountDoctor')
       }
     } else if(objAccount.type == 2) {
@@ -234,6 +247,9 @@ router.beforeEach((to, from, next) => {
       }
       else if(to.path == '/nurseAdmission') {
          next('/nurseAdmission')
+      } 
+      else if(to.path == '/nurseRequest') {
+         next('/nurseRequest')
       } 
       else {
          next('/nurseAppointment')

@@ -34,8 +34,20 @@
 
 
         <v-subheader class="mt-3 green--text">MANAGE</v-subheader>
+         <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/nurseAppointment">
+          <v-list-tile-action>
+            <v-avatar tile size="21">
+              <img src="https://img.icons8.com/ios/50/ffffff/calendar-filled.png">
+            </v-avatar>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              Request
+            </v-list-tile-title>
+          </v-list-tile-content>
+          </v-btn>
 
-          <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/nurseAppointment">
+          <v-btn  class="textNone caption transparent" exact-active-class="green"  depressed block to="/nurseRequest">
           <v-list-tile-action>
             <v-avatar tile size="21">
               <img src="https://img.icons8.com/ios/50/ffffff/calendar-filled.png">

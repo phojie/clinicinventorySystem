@@ -423,11 +423,11 @@
                   ></v-text-field>
                     <!-- :allowed-dates="testerf" -->
                   <v-date-picker
-                    full-width
-                    :min="minDate"
-                    landscape
-                    v-model="modelPatient.date"
-                    @change="menu1 = false"
+                     full-width
+                     :min="minDate"
+                     landscape
+                     v-model="modelPatient.date"
+                     @change="menu1 = false"
                   ></v-date-picker>
                 </v-menu>
               </v-flex>
@@ -450,6 +450,7 @@ import publicIp from 'public-ip'
 import firebase from 'firebase'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, minLength, email } from 'vuelidate/lib/validators'
+
 export default {
   mixins: [validationMixin],
   validations: {
@@ -487,11 +488,11 @@ export default {
         typeD: '',
         doctor: '',
         date: '',
-      }
+      },
     }
   },
   methods: {
-    
+  
     testerf(){
       var el = ["2018-03-03", "2018-03-05"]
       val => el.indexOf(val) !== -1
@@ -499,9 +500,12 @@ export default {
     // testerf: val => parseInt(val.split('-')[2], 10) % 2 === 0,
     saveAppointment() {
       let vm = this
-      if(this.$v.$invalid) {
+      var searchDate = _.find(this.listofDisabled, ['date',this.modelPatient.date])
+      var count = _.filter(this.listofAdmission, ['adate',this.modelPatient.adate])
+      
+
+      if(this.$v.$invalid || searchDate || count.length>15) {
         this.$v.$touch()
-        console.log('err')
       } else {
         var newPostKey = firebase.database().ref().child('appointments').push().key;
         var sendtodb = firebase.database().ref('appointments/'+newPostKey)
@@ -615,10 +619,25 @@ export default {
       !this.$v.modelPatient.doctor.required && errors.push('Doctor is required')
       return errors
     },
+    listofAdmission() {
+       var data = _.filter(this.$store.getters.listofAs,'doctor')
+      return data
+    },
     dateErrors () {
       const errors = []
+      console.log(this.listofDisabled)
+      var count = _.filter(this.listofAdmission, ['adate',this.modelPatient.date])
+      console.log(count.length)
+      console.log(this.listofAdmission)
+      var searchDate = _.find(this.listofDisabled, ['date',this.modelPatient.date])
+      if(searchDate) {
+         errors.push('Doctor is not available, Please choose another day')
+      } else if(count.length > 15) {
+         errors.push('Already fully book, Please choose another day')
+      }
       if (!this.$v.modelPatient.date.$dirty) return errors
       !this.$v.modelPatient.date.required && errors.push('Appointment date is required')
+      
       return errors
     },
 
@@ -628,6 +647,28 @@ export default {
     listofDoctors () {
       var getDoc = _.filter(this.$store.getters.listofUsers, ['type', 1])
       return getDoc 
+    },
+    listofDisabled() {
+      let vm= this
+      let list = []
+      var test = vm.modelPatient.doctor
+      var stringArray = test.split(" ");
+      var first = stringArray[0];
+      var last = stringArray[1];
+
+      var data = _.filter(this.listofUsers, {'fn': first, 'ln': last})
+      if(data.length > 0) {
+         _.forEach(data[0].dayoff, function(value,key) {
+            list.push({
+               date: value
+               })
+         })
+      } 
+   
+      return list
+    },
+    listofUsers() {
+        return this.$store.getters.listofUsers
     },
     listofSelect() {
       let vm= this

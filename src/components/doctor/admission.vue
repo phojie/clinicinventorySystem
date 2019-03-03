@@ -373,7 +373,8 @@
         return obUser
     },
     listofAdmission() {
-       var data = _.filter(this.$store.getters.listofAdmission,'doctor')
+      var data = _.filter(this.$store.getters.listofAdmission,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      //  var data = _.filter(this.$store.getters.listofAdmission,'doctor')
       return data
     },
     myRequest() {
@@ -382,7 +383,7 @@
     }
   },
   methods: {
-     deleteAdmission(){
+      deleteAdmission(){
          let vm = this
          var submitA = firebase.database().ref('admissions/'+this.modelPatient.keyIndex)
          vm.dialog= false

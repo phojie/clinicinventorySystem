@@ -4,7 +4,7 @@
       <v-layout row wrap >
         <v-flex sm12 class="mb-5">
           <v-card-title>
-            <div class="font-weight-black">Incoming Appointments </div>
+            <div class="font-weight-black"> Pending list </div>
             <v-spacer></v-spacer>
             <v-text-field
               v-model="search"
@@ -16,9 +16,9 @@
           </v-card-title>
           <v-data-table
             :headers="headers"
-            :items="incompingAppointments"
+            :items="pedingAppointments"
             :search="search"
-          >
+           >
             <template slot="items" slot-scope="props">
               <td class="text-xs-">{{ props.item.firstname }} {{ props.item.lastname }}</td>
               <td class="text-xs-" v-if="currentDay == props.item.adate"> 
@@ -49,7 +49,113 @@
               Your search for "{{ search }}" found no results.
             </v-alert> -->
           </v-data-table>
+
         </v-flex>
+
+        <v-flex sm12 class="mb-5">
+          <v-card-title>
+            <div class="font-weight-black"> Admitted list </div>
+            <v-spacer></v-spacer>
+            <!-- <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field> -->
+          </v-card-title>
+
+          <v-data-table
+            :headers="headers"
+            :items="admittedAppoitments"
+            :search="search"
+           >
+            <template v-if="props.item.status == 'Admitted'"  slot="items" slot-scope="props">
+              <td class="text-xs-">{{ props.item.firstname }} {{ props.item.lastname }}</td>
+              <td class="text-xs-" v-if="currentDay == props.item.adate"> 
+                <v-chip small label color="green" text-color="white">
+                <v-icon left>label</v-icon> Today
+                </v-chip> 
+              </td>
+              <td class="text-xs-" v-else-if="next2day == props.item.adate"> 
+                <v-chip small label color="amber " darken-2 text-color="white">
+                <v-icon left>label</v-icon> Tomorrow
+                </v-chip> 
+              </td>
+              <td v-else>
+                <v-chip small label color="blue " darken-2 text-color="white">
+                  <!-- <v-icon left>label</v-icon> -->
+                  {{ props.item.adate }}
+                </v-chip> 
+              </td>
+              <td class="text-xs-"> <span class="green--text text--darken-2">Dr.</span> {{ props.item.doctor }}</td>
+              <td class="text-xs-">  {{ props.item.status }}</td>
+              <td class="text-xs-center">
+                <v-btn v-if="props.item.status == 'Pending'" @click="viewDetails(props.item)" small  flat class="green--text textNone caption"  text-color="" >View Form</v-btn> 
+                <v-btn v-else @click="viewDetails(props.item)" small  flat class="green--text textNone caption"  text-color="" >View prescription code</v-btn> 
+                <v-btn v-if="props.item.status != 'Admitted'" @click="admitDetails(props.item)" small  flat class="blue--text textNone caption"  text-color="" >Admit Patient</v-btn> 
+              </td>
+            </template>
+            <!-- <v-alert slot="no-results" :value="true" color="error" icon="warning">
+              Your search for "{{ search }}" found no results.
+            </v-alert> -->
+          </v-data-table>
+
+        </v-flex>
+
+         <v-flex sm12 class="mb-5">
+          <v-card-title>
+            <div class="font-weight-black"> Done list </div>
+            <v-spacer></v-spacer>
+            <!-- <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field> -->
+          </v-card-title>
+
+          <v-data-table
+            :headers="headers"
+            :items="doneAppointments"
+            :search="search"
+           >
+            <template v-if="props.item.status == 'Done'"  slot="items" slot-scope="props">
+              <td class="text-xs-">{{ props.item.firstname }} {{ props.item.lastname }}</td>
+              <td class="text-xs-" v-if="currentDay == props.item.adate"> 
+                <v-chip small label color="green" text-color="white">
+                <v-icon left>label</v-icon> Today
+                </v-chip> 
+              </td>
+              <td class="text-xs-" v-else-if="next2day == props.item.adate"> 
+                <v-chip small label color="amber " darken-2 text-color="white">
+                <v-icon left>label</v-icon> Tomorrow
+                </v-chip> 
+              </td>
+              <td v-else>
+                <v-chip small label color="blue " darken-2 text-color="white">
+                  <!-- <v-icon left>label</v-icon> -->
+                  {{ props.item.adate }}
+                </v-chip> 
+              </td>
+              <td class="text-xs-"> <span class="green--text text--darken-2">Dr.</span> {{ props.item.doctor }}</td>
+              <td class="text-xs-">  {{ props.item.status }}</td>
+              <td class="text-xs-center">
+                <v-btn v-if="props.item.status == 'Pending'" @click="viewDetails(props.item)" small  flat class="green--text textNone caption"  text-color="" >View Form</v-btn> 
+                <v-btn v-else @click="viewDetails(props.item)" small  flat class="green--text textNone caption"  text-color="" >View prescription code</v-btn> 
+                <v-btn v-if="props.item.status != 'Admitted'" @click="admitDetails(props.item)" small  flat class="blue--text textNone caption"  text-color="" >Admit Patient</v-btn> 
+              </td>
+            </template>
+            <!-- <v-alert slot="no-results" :value="true" color="error" icon="warning">
+              Your search for "{{ search }}" found no results.
+            </v-alert> -->
+          </v-data-table>
+
+        </v-flex>
+
+
+
 
         <v-flex sm12>
           <v-card  flat>
@@ -143,9 +249,13 @@
           <v-flex xs12>
             <v-layout class="pa-3" row wrap justify-end>
 
-              <v-text-field ref="prescribeIn" label="Enter medicine description" v-model="prescribeIn">
+              <v-text-field  class="pr-2"  ref="prescribeIn" label="Enter medicine Name" v-model="prescribeIn">
               </v-text-field>
-              <v-text-field  mask="########" ref="prescribeIn2" label="Quantity" v-model="medicineIn">
+              <v-text-field class="pr-2" mask="########" label="Quantity" v-model="medicineIn">
+              </v-text-field>
+              <v-text-field  class="pr-2"  label="Strength" v-model="strengthIn">
+              </v-text-field>
+              <v-text-field  class="pr-2"  label="Description" v-model="descriptionIn">
               </v-text-field>
               <v-btn @click="submitPrescribe" large icon color="">
               <v-avatar
@@ -159,7 +269,7 @@
           </v-flex>
           <v-flex class="px-2"  xs12>
             <div v-for="(pr, index) in prescribe" :key="index">
-             <v-chip text-color="blue darken-3"  @input="remove(index)" close>{{index+1}}.</v-chip> <span class="blue--text">Description</span>: {{pr.Description}} <span class="blue--text">({{pr.Quantity}})</span>
+             <v-chip text-color="blue darken-3"  @input="remove(index)" close>{{index+1}}.</v-chip> <span class="blue--text">Medicine</span>: {{pr.Description}} <span class="green--text">({{pr.Quantity}})</span>,  <span class="blue--text">Strength</span>: {{pr.Strength}}, <span class="blue--text">Description</span>: {{pr.Description}} 
             </div>
           </v-flex>
       
@@ -419,10 +529,12 @@
   },
   data() {
     return {
-       
-      validCode: '',
       medicineIn:'',
+      descriptionIn: '',
+      strengthIn: '',
       prescribeIn:'',
+
+      validCode: '',
       prescribe:[],
       clearedAct: false,
       dialogAdmit: false,
@@ -489,6 +601,56 @@
       var format = today.add(1, 'days'); 
       return format.format('YYYY-MM-DD')
     },
+    doneAppointments() {
+        var historyList = []
+      _.forEach(this.myDone, function(data){
+         // var event = a - b
+        var today = moment().format("YYYY-MM-DD")
+        var yesterday = data.adate
+        var a = moment(today)
+        var b = moment(yesterday)
+        var event = b.diff(a, 'days', true)      
+        var signVar = Math.sign(event)
+        if(signVar != -1) {
+					// console.log("​appointsHistory -> signVar", data)
+          // go push
+          historyList.push(data)
+        }
+      })
+      return historyList
+    },
+     myDone() {
+      var filter = _.filter(this.listofAppointments,['status', 'Done'])
+      // var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      // var filter = _.filter(this.listofAppointments,'doctor')
+      // console.log("​myRequest -> filter", filter)
+      return filter
+    },
+    myAdmitted() {
+      var filter = _.filter(this.listofAppointments,['status', 'Admitted'])
+      // var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      // var filter = _.filter(this.listofAppointments,'doctor')
+      // console.log("​myRequest -> filter", filter)
+      return filter
+    },
+    admittedAppoitments() {
+      var historyList = []
+      _.forEach(this.myAdmitted, function(data){
+         // var event = a - b
+        var today = moment().format("YYYY-MM-DD")
+        var yesterday = data.adate
+        var a = moment(today)
+        var b = moment(yesterday)
+        var event = b.diff(a, 'days', true)      
+        var signVar = Math.sign(event)
+        if(signVar != -1) {
+					// console.log("​appointsHistory -> signVar", data)
+          // go push
+          historyList.push(data)
+        }
+      })
+      return historyList
+    },
     accountDetails() {
       var obUser = JSON.parse(localStorage.getItem('accountDetails') );
       // console.log(obUser.profilePic)
@@ -503,6 +665,31 @@
       // var filter = _.filter(this.listofAppointments,'doctor')
       // console.log("​myRequest -> filter", filter)
       return filter
+    },
+    myPending() {
+      var filter = _.filter(this.listofAppointments,['status', 'Pending'])
+      // var filter = _.filter(this.listofAppointments,['doctor', this.accountDetails.fn+' '+this.accountDetails.ln])
+      // var filter = _.filter(this.listofAppointments,'doctor')
+      // console.log("​myRequest -> filter", filter)
+      return filter
+    },
+    pedingAppointments() {
+      var historyList = []
+      _.forEach(this.myPending, function(data){
+         // var event = a - b
+        var today = moment().format("YYYY-MM-DD")
+        var yesterday = data.adate
+        var a = moment(today)
+        var b = moment(yesterday)
+        var event = b.diff(a, 'days', true)      
+        var signVar = Math.sign(event)
+        if(signVar != -1) {
+					// console.log("​appointsHistory -> signVar", data)
+          // go push
+          historyList.push(data)
+        }
+      })
+      return historyList
     },
     incompingAppointments() {
       var historyList = []
@@ -560,11 +747,15 @@
     submitPrescribe() {
       if(this.prescribeIn != '')  {
         this.prescribe.push({
-         Description: _.capitalize(this.prescribeIn),
-         Quantity: this.medicineIn
+         Name: _.capitalize(this.prescribeIn),
+         Description: _.capitalize(this.descriptionIn),
+         Quantity: this.medicineIn,
+         Strength:  _.capitalize(this.strengthIn),
         })
         this.prescribeIn = ''
         this.medicineIn= ''
+        this.descriptionIn= ''
+        this.strengthIn= ''
         this.$refs.prescribeIn.focus()
       }
     },
